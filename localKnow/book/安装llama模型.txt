@@ -1,0 +1,11 @@
+新建环境： conda  create -n ollama python=3.10.9 （需要现安装anaconda）
+
+
+
+激活环境：conda activate ollama 
+
+安装对应环境需要的工具包：pip install  torch  torchvision  torchaudio  --index-url https://download.pytorch.org/whl/cu117
+
+
+获取一个开源的可视化界面：https://github.com/oobabooga/text-generation-webui
+启动webui,进入text-generation-webui：python  ./server.py
