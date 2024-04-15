@@ -1,0 +1,16 @@
+## 🛳️ ChromiumPage
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🛳️ ChromiumPage🚤 概述🚤 启动或接管浏览器🚤 访问网页🚤 获取网页信息🚤 页面交互🚤 查找元素🚤 获取元素信息🚤 元素交互🚤 自动等待🚤 文件上传🚤 标签页操作🚤 iframe 操作🚤 监听网络数据🚤 动作链🚤 截图和录像🚤 浏览器启动设置🚀 WebPage🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🛳️ ChromiumPage🚤 概述🚤 概述ChromiumPage对象和WebPage对象的 d 模式，可操控浏览器。本章介绍ChromiumPage。
+顾名思义，ChromiumPage是 Chromium 内核浏览器的页面，它用 POM 方式封装了操控网页所需的属性和方法。
+使用它，我们可与网页进行交互，如调整窗口大小、滚动页面、操作弹出框等等。
+通过从中获取的元素对象，我们还可以跟页面中的元素进行交互，如输入文字、点击按钮、选择下拉菜单等等。
+甚至，我们可以在页面或元素上运行 JavaScript 代码、修改元素属性、增删元素等。
+可以说，操控浏览器的绝大部分操作，都可以由ChromiumPage及其衍生的对象完成，而它们的功能，还在不断增加。
+除了与页面和元素的交互，ChromiumPage还扮演着浏览器控制器的角色，可以说，一个ChromiumPage对象，就是一个浏览器。
+它可以对标签页进行管理，可以对下载任务进行控制。可以为每个标签页生成独立的页面对象（ChromiumTab），以实现多标签页同时操作，而无需切入切出。
+随着 3.0 版本脱离对 WebDriver 的依赖，作者终于可以放飞自我，为ChromiumPage添加各种各样有意思的功能，我们以后会越做越好。
+我们看个简单的例子，来了解CromiumPage的工作方式。
+
+在百度搜搜“Drissionpage”，并打印结果。
+# 导入from DrissionPage import ChromiumPage# 创建对象page = ChromiumPage()# 访问网页page.get('https://www.baidu.com')# 输入文本page('#kw').input('DrissionPage')# 点击按钮page('#su').click()# 等待页面跳转page.wait.load_start()# 获取所有结果links = page.eles('tag:h3')# 遍历并打印结果for link in links:    print(link.text)上一页🚄 启动配置下一页🚤 启动或接管浏览器作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.

@@ -1,0 +1,34 @@
+## 🚄 创建页面对象
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🚄 概述🚄 创建页面对象🚄 访问网页🚄 获取页面信息🚄 查找元素🚄 获取元素信息🚄 页面设置🚄 启动配置🛳️ ChromiumPage🚀 WebPage🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🚅 SessionPage🚄 创建页面对象本页总览🚄 创建页面对象SessionPage对象和WebPage对象的 s 模式都能收发数据包，本节只介绍SessionPage的创建，在WebPage的章节再对其进行介绍。
+✅️️ SessionPage初始化参数​
+初始化参数类型默认值说明session_or_optionsSessionSessionOptionsNone传入Session对象时使用该对象收发数据包；传入SessionOptions对象时用该配置创建Session对象；为None则从 ini 文件读取timeoutfloatNone连接超时时间，为None则从配置文件中读取
+
+✅️️ 直接创建​
+这种方式代码最简洁，程序会从配置文件中读取配置，自动生成页面对象。
+from DrissionPage import SessionPagepage = SessionPage()
+SessionPage无需控制浏览器，无需做任何配置即可使用。
+直接创建时，程序默认读取 ini 文件配置，如 ini 文件不存在，会使用内置配置。
+默认 ini 和内置配置信息详见“进阶使用->配置文件的使用”章节。
+
+✅️️ 通过配置信息创建​
+如果需要在使用前进行一些配置，可使用SessionOptions。它是专门用于设置Session对象初始状态的类，内置了常用的配置。详细使用方法见“启动配置”一节。
+📌 使用方法​
+在SessionPage创建时，将已创建和设置好的SessionOptions对象以参数形式传递进去即可。
+初始化参数类型默认值说明read_fileboolTrue是否从 ini 文件中读取配置信息ini_pathstrNone文件路径，为None则读取默认 ini 文件
+注意Session对象创建后再修改这个配置是没有效果的。
+# 导入 SessionOptionsfrom DrissionPage import SessionPage, SessionOptions# 创建配置对象，并设置代理信息so = SessionOptions().set_proxies(http='127.0.0.1:1080')# 用该配置创建页面对象page = SessionPage(session_or_options=so)
+Tips您可以把配置保存到配置文件以后自动读取，详见”启动配置“章节。
+
+📌 从指定 ini 文件创建​
+以上方法是使用默认 ini 文件中保存的配置信息创建对象，你可以保存一个 ini 文件到别的地方，并在创建对象时指定使用它。
+from DrissionPage import SessionPage, SessionOptions# 创建配置对象时指定要读取的ini文件路径so = SessionOptions(ini_path=r'./config1.ini')# 使用该配置对象创建页面page = SessionPage(session_or_options=so)
+
+📌 不使用 ini 文件​
+可以用以下方法，指定不使用 ini 文件的配置，而把配置写在代码中。
+from DrissionPage import SessionPage, SessionOptionsso = SessionOptions(read_file=False)  # read_file设为Falseso.set_retry(5)page = SessionPage(so)
+
+✅️️ 传递控制权​
+当需要使用多个页面对象共同操作一个页面时，可在页面对象创建时接收另一个页面间对象传递过来的Session对象，以达到多个页面对象同时使用一个Session对象的效果。
+# 创建一个页面page1 = SessionPage()# 获取页面对象内置的Session对象session = page1.session# 在第二个页面对象初始化时传递该对象page2 = SessionPage(session_or_options=session)上一页🚄 概述下一页🚄 访问网页✅️️ SessionPage初始化参数✅️️ 直接创建✅️️ 通过配置信息创建📌 使用方法📌 从指定 ini 文件创建📌 不使用 ini 文件✅️️ 传递控制权作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.

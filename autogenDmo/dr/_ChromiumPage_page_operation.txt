@@ -1,0 +1,361 @@
+## 🚤 页面交互
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🛳️ ChromiumPage🚤 概述🚤 启动或接管浏览器🚤 访问网页🚤 获取网页信息🚤 页面交互🚤 查找元素🚤 获取元素信息🚤 元素交互🚤 自动等待🚤 文件上传🚤 标签页操作🚤 iframe 操作🚤 监听网络数据🚤 动作链🚤 截图和录像🚤 浏览器启动设置🚀 WebPage🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🛳️ ChromiumPage🚤 页面交互本页总览🚤 页面交互本节介绍浏览器页面交互功能，元素的交互在下一节。
+一个 Tab 对象（ChromiumTab和WebPageTab）控制一个浏览器的标签页，是页面控制的主要单位。
+ChromiumPage和WebPage也控制一个标签页，只是它们增加了一些浏览器总体控制功能。
+下面介绍的功能，除了关闭浏览器，Tab 对象都可使用。
+✅️️ 页面跳转​
+📌 get()​
+该方法用于跳转到一个网址。当连接失败时，程序会进行重试。
+参数名称类型默认值说明urlstr必填目标 urlshow_errmsgboolFalse连接出错时是否显示和抛出异常retryintNone重试次数，为None时使用页面参数，默认 3intervalfloatNone重试间隔（秒），为None时使用页面参数，默认 2timeoutfloatNone加载超时时间（秒）
+返回类型说明bool是否连接成功
+示例：
+page.get('https://www.baidu.com')
+
+📌 back()​
+此方法用于在浏览历史中后退若干步。
+参数名称类型默认值说明stepsint1后退步数
+返回：None
+示例：
+page.back(2)  # 后退两个网页
+
+📌 forward()​
+此方法用于在浏览历史中前进若干步。
+参数名称类型默认值说明stepsint1前进步数
+返回：None
+page.forward(2)  # 前进两步
+
+📌 refresh()​
+此方法用于刷新当前页面。
+参数名称类型默认值说明ignore_cacheboolFalse刷新时是否忽略缓存
+返回：None
+示例：
+page.refresh()  # 刷新页面
+
+📌 stop_loading()​
+此方法用于强制停止当前页面加载。
+参数： 无
+返回：None
+
+📌 set.blocked_urls()​
+此方法用于设置忽略的连接。
+参数名称类型默认值说明urlsstrlisttupleNone必填要忽略的 url，可传入多个，可用'*'通配符，传入None时清空已设置的项
+返回：None
+示例：
+page.set.blocked_urls('*.css*')  # 设置不加载css文件
+
+✅️️ 元素管理​
+📌 add_ele()​
+此方法用于创建一个元素。可选择是否插入到 DOM。
+html_or_info传入元素完整 html 文本时，会插入到 DOM。如insert_to参数为None，插入到body元素。
+传入元素信息（格式：(tag, {name: value})）时，如insert_to参数为None，不插入到 DOM。此时返回的元素需用 js 方式点击。
+参数名称类型默认值说明html_or_infostrTuple[str, dict]必填新元素的 html 文本或信息；为tuple可新建不加入到 DOM 的元素insert_tostrChromiumElementTuple[str, str]None插入到哪个元素中，可接收元素对象和定位符；如为None，html_or_info是str时添加到 body，否则不添加到 DOMbeforestrChromiumElementTuple[str, str]None在哪个子节点前面插入，可接收对象和定位符，为None插入到父元素末尾
+返回类型说明ChromiumElement新建的元素对象
+添加一个可见的元素：
+from DrissionPage import ChromiumPagepage = ChromiumPage()page.get('https://www.baidu.com')html = '<a href="https://DrissionPage.cn" target="blank">DrissionPage </a> 'ele = page.add_ele(html, '#s-top-left', '新闻')  # 插入到导航栏ele.click()
+添加一个不可见的元素：
+from DrissionPage import ChromiumPagepage = ChromiumPage()info = ('a', {'innerText': 'DrissionPage', 'href': 'https://DrissionPage.cn', 'target': 'blank'})ele = page.add_ele(info)ele.click('js')  # 需用js点击
+
+📌 remove_ele()​
+此方法用于从页面上删除一个元素。
+参数名称类型默认值说明loc_or_elestrTuple[str, str]ChromiumElement必填要删除的元素，可以是元素或定位符
+返回：None
+示例：
+# 删除一个已获得的元素ele = page('tag:a')page.remove_ele(ele)# 删除用定位符找到的元素page.remove_ele('tag:a')
+
+✅️️ 执行脚本或命令​
+📌 run_js()​
+此方法用于执行 js 脚本。
+参数名称类型默认值说明scriptstr必填js 脚本文本或脚本文件路径*args-无传入的参数，按顺序在js文本中对应arguments[0]、arguments[1]...as_exprboolFalse是否作为表达式运行，为True时args参数无效timetoutfloatNonejs 超时时间，为None则使用页面timeouts.script设置
+返回类型说明Any脚本执行结果
+示例：
+# 用传入参数的方式执行 js 脚本显示弹出框显示 Hello world!page.run_js('alert(arguments[0]+arguments[1]);', 'Hello', ' world!')
+注意
+如果as_expr为True，脚本应是返回一个结果的形式，并且不能有return
+如果as_expr不为`True'，脚本应尽量写成一个方法。
+
+
+📌 run_js_loaded()​
+此方法用于运行 js 脚本，执行前等待页面加载完毕。
+参数名称类型默认值说明scriptstr必填js 脚本文本*args-无传入的参数，按顺序在js文本中对应arguments[0]、arguments[1]...as_exprboolFalse是否作为表达式运行，为True时args参数无效timetoutfloatNonejs 超时时间，为None则使用页面timeouts.script设置
+返回类型说明Any脚本执行结果
+
+📌 run_async_js()​
+此方法用于以异步方式执行 js 代码。
+参数：
+参数名称类型默认值说明scriptstr必填js 脚本文本*args-无传入的参数，按顺序在js文本中对应arguments[0]、arguments[1]...as_exprboolFalse是否作为表达式运行，为True时args参数无效
+返回：None
+
+📌 run_cdp()​
+此方法用于执行 Chrome DevTools Protocol 语句。
+cdp 用法详见 Chrome DevTools Protocol。
+参数名称类型默认值说明cmdstr必填协议项目**cmd_args-无项目参数
+返回类型说明dict执行返回的结果
+示例：
+# 停止页面加载page.run_cdp('Page.stopLoading')
+
+📌 run_cdp_loaded()​
+此方法用于执行 Chrome DevTools Protocol 语句，执行前先确保页面加载完毕。
+参数名称类型默认值说明cmdstr必填协议项目**cmd_args-无项目参数
+返回类型说明dict执行返回的结果
+
+✅️️ cookies 及缓存​
+📌 set.cookies()​
+此方法用于设置 cookie。可设置一个或多个。
+详细用法见实用教程相关章节。
+参数名称类型默认值说明cookiesCookieJarlisttuplestrdict必填cookies 信息
+返回：None
+示例：
+# 可以接受多种类型的参数cookies1 = ['name1=value1', 'name2=value2']cookies2 = 'name1=value1; name2=value2; path=/; domain=.example.com;'cookies3 = {'name1': 'value1', 'name2': 'value2', 'domain': '.example.com'}page.set.cookies(cookies1)
+
+📌 set.cookies.clear()​
+此方法用于清除所有 cookie。
+参数： 无
+返回：None
+
+📌 set.cookies.remove()​
+此方法用于删除一个 cookie。
+参数名称类型默认值说明namestr必填cookie 的 name 字段urlstrNonecookie 的 url 字段domainstrNonecookie 的 domain 字段pathstrNonecookie 的 path 字段
+返回：None
+
+📌 set.session_storage()​
+此方法用于设置或删除某项 sessionStorage 信息。
+参数名称类型默认值说明itemstr必填要设置的项valuestrFalse必填为False时，删除该项
+返回：None
+示例：
+page.set.session_storage(item='abc', value='123')
+
+📌 set.local_storage()​
+此方法用于设置或删除某项 localStorage 信息。
+参数名称类型默认值说明itemstr必填要设置的项valuestrFalse必填为False时，删除该项
+返回：None
+
+📌 clear_cache()​
+此方法用于清除缓存，可选择要清除的项。
+参数名称类型默认值说明session_storageboolTrue是否清除 sessionstoragelocal_storageboolTrue是否清除 localStoragecacheboolTrue是否清除 cachecookiesboolTrue是否清除 cookies
+返回：None
+示例：
+page.clear_cache(cookies=False)  # 除了 cookies，其它都清除
+
+✅️️ 运行参数设置​
+各种设置功能藏在set属性中。
+📌 set.retry_times()​
+此方法用于设置连接失败时重连次数。
+参数名称类型默认值说明timesint必填次数
+返回：None
+📌 set.retry_interval()​
+此方法用于设置连接失败时重连间隔。
+参数名 称类型默认值说明intervalfloat必填秒数
+返回：None
+📌 set.timeouts()​
+此方法用于设置三种超时时间，单位为秒。可单独设置，为None表示不改变原来设置。
+参数名称类型默认值说明basefloatNone整体超时时间page_loadfloatNone页面加载超时时间scriptfloatNone脚本运行超时时间
+返回：None
+示例：
+page.set.timeouts(base=10, page_load=30)
+
+📌 set.load_strategy​
+此属性用于设置页面加载策略，调用其方法选择某种策略。
+方法名称参数说明normal()无等待页面完全加载完成，为默认状态eager()无等待文档加载完成就结束，不等待资源加载none()无页面连接完成就结束
+示例：
+page.set.load_mode.normal()page.set.load_mode.eager()page.set.load_mode.none()
+
+📌 set.user_agent()​
+此方法用于为浏览器当前标签页设置 user agent。
+参数名称类型默认值说明uastr必填user agent 字符串platformstrNone平台类型，如'android'
+返回：None
+
+📌 set.headers()​
+此方法用于设置额外添加到当前页面请求 headers 的参数。
+headers 可以是dict格式的，也可以是文本格式。
+文本格式不同字段用\n分隔，字段 key 和 value 用': '分隔，即从浏览器直接复制的格式。
+参数名称类型默认值说明headersdictstr必填headers 信息
+返回：None
+示例：
+# dict格式h = {'connection': 'keep-alive', 'accept-charset': 'GB2312,utf-8;q=0.7,*;q=0.7'}page.set.headers(headers=h)# 文本格式h = '''connection: keep-aliveaccept-charset: GB2312,utf-8;q=0.7,*;q=0.7'''page.set.headers(headers=h)
+
+✅️️ 窗口管理​
+窗口管理功能藏在set.window属性中。
+📌 set.window.max()​
+此方法用于使窗口最大化。
+参数： 无
+返回：None
+示例：
+page.set.window.max()
+
+📌 set.window.mini()​
+此方法用于使窗口最小化。
+参数： 无
+返回：None
+
+📌 set.window.full()​
+此方法用于使窗口切换到全屏模式。
+参数： 无
+返回：None
+
+📌 set.window.normal()​
+此方法用于使窗口切换到普通模式。
+参数： 无
+返回：None
+
+📌 set.window.size()​
+此方法用于设置窗口大小。只传入一个参数时另一个参数不会变化。
+参数名称类型默认值说明widthintNone窗口宽度heightintNone窗口高度
+返回：None
+示例：
+page.set.window.size(500, 500)
+
+📌 set.window.location()​
+此方法用于设置窗口位置。只传入一个参数时另一个参数不会变化。
+参数名称类型默认值说明xintNone距离顶部距离yintNone距离左边距离
+返回：None
+示例：
+page.set.window.location(500, 500)
+
+📌 set.window.hide()​
+此方法用于隐藏浏览器窗口。
+与 headless 模式不一样，这个方法是直接隐藏浏览器进程。在任务栏上也会消失。只支持 Windows 系统，并且必需已安装 pypiwin32 库才可使用。
+不过，窗口隐藏后，如果有新窗口出现，整个浏览器又会显现出来。
+参数： 无
+返回：None
+示例：
+page.set.window.hide()
+注意
+浏览器隐藏后并没有关闭，下次运行程序还会接管已隐藏的浏览器
+浏览器隐藏后，如果有新建标签页，会自行显示出来
+
+
+📌 set.window.show()​
+此方法用于显示当前浏览器窗口。
+参数： 无
+返回：None
+
+✅️️ 页面滚动​
+页面滚动的功能藏在scroll属性中。
+📌 scroll.to_top()​
+此方法用于滚动页面到顶部，水平位置不变。
+参数： 无
+返回：None
+示例：
+page.scroll.to_top()
+
+📌 scroll.to_bottom()​
+此方法用于滚动页面到底部，水平位置不变。
+参数： 无
+返回：None
+
+📌 scroll.to_half()​
+此方法用于滚动页面到垂直中间位置，水平位置不变。
+参数： 无
+返回：None
+
+📌 scroll.to_rightmost()​
+此方法用于滚动页面到最右边，垂直位置不变。
+参数： 无
+返回：None
+
+📌 scroll.to_leftmost()​
+此方法用于滚动页面到最左边，垂直位置不变。
+参数： 无
+返回：None
+
+📌 scroll.to_location()​
+此方法用于滚动页面到滚动到指定位置。
+参数名称类型默认值说明xint必填水平位置，单位是像素yint必填垂直位置，单位是像素
+返回：None
+示例：
+page.scroll.to_location(300, 50)
+
+📌 scroll.up()​
+此方法用于使页面向上滚动若干像素，水平位置不变。
+参数名称类型默认值说明pixelint必填滚动的像素
+返回：None
+示例：
+page.scroll.up(30)
+
+📌 scroll.down()​
+此方法用于使页 面向下滚动若干像素，水平位置不变。
+参数名称类型默认值说明pixelint必填滚动的像素
+返回：None
+
+📌 scroll.right()​
+此方法用于使页面向右滚动若干像素，垂直位置不变。
+参数名称类型默认值说明pixelint必填滚动的像素
+返回：None
+
+📌 scroll.left()​
+此方法用于使页面向左滚动若干像素，垂直位置不变。
+参数名称类型默认值说明pixelint必填滚动的像素
+返回：None
+
+  📌 scroll.to_see()​
+此方法用于滚动页面直到元素可见。
+参数名称类型默认值说明loc_or_elestrtupleChromiumElement必填元素的定位信息，可以是元素、定位符centerboolNoneNone是否尽量滚动到页面正中，为None时如果被遮挡，则滚动到页面正中
+返回：None
+示例：
+# 滚动到某个已获取到的元素ele = page.ele('tag:div')page.scroll.to_see(ele)# 滚动到按定位符查找到的元素page.scroll.to_see('tag:div')
+
+✅️️ 滚动设置​
+页面滚动有两种方式，一种是滚动时直接跳到目标位置，第二种是平滑滚动，需要一定时间。后者滚动时间难以确定，容易导致程序不稳定，点击不准确的问题。
+一些网站会在 css 设置中指定网站使用平滑滚动，这是我们不希望的，但本着让开发者拥有充分选择权利的原则，本库没有强制修改，而是提供两项设置供开发者选择。
+📌 set.scroll.smooth()​
+此方法设置网站是否开启平滑滚动。建议用此方法为网页关闭平滑滚动。
+参数名称类型默认值说明on_offboolTruebool表示开或关
+返回：None
+示例：
+page.set.scroll.smooth(on_off=False)
+
+📌 set.scroll.wait_complete()​
+此方法用于设置滚动后是否等待滚动结束。在不想关闭网页平滑滚动功能时，可开启此设置以保障滚动结束后才执行后面的步骤
+参数名称类型默认值说明on_offboolTruebool表示开或关
+返回：None
+示例：
+page.set.scroll.wait_complete(on_off=True)
+
+✅️️ 弹出消息处理​
+📌 handle_alert()​
+此方法用于处理提示框。
+它能够设置等待时间，等待提示框出现才进行处理，若超时没等到提示框，返回False。
+也可只获取提示框文本而不处理提示框。
+还可以处理下一个出现的提示框，这在处理离开页面时触发的弹窗非常有用。
+注意程序无法接管一个已经弹出了提示框的浏览器或标签页。
+参数名称类型默认值说明acceptboolNoneTrueTrue表示确认，False表示取消，None不会按按钮但依然返回文本值sendstrNone处理 prompt 提示框时可输入文本timeoutfloatNone等待提示框出现的超时时间，为None时使用页面整体超时时间next_oneboolFalse是否处理下一个出现的弹窗，为True时timeout参数无效
+返回类型说明str提示框内容文本False未等到提示框则返回False
+示例：
+# 确认提示框并获取提示框文本txt = page.handle_alert()# 点击取消page.handle_alert(accept=False)# 给 prompt 提示框输入文本并点击确定page.handle_alert(accept=True, send='some text')# 不处理提示框，只获取提示框文本txt = page.handle_alert(accept=None)
+
+📌 自动处理​
+标签页对象可使用set.auto_handle_alert()方法设置自动处理该 tab 的提示框，使提示框不会弹窗而直接被处理掉。
+参数名称类型默认值说明on_offboolTrue开或关acceptboolTrue确定还是取消
+返回：None
+示例：
+from DrissionPage import ChromiumPagep = ChromiumPage()p.set.auto_handle_alert()  # 这之后出现的弹窗都会自动确认
+
+📌 全局自动处理​
+Page 对象的set.auto_handle_alert()方法比 Tab 对象的多一个all_tabs参数，可用于指定是否全局设置自动处理。
+设置后，所有 tab 的弹窗都会根据设置自动处理。
+参数名称类型默认值说明on_offboolTrue开或关acceptboolTrue确定还是取消all_tabsboolFalse是否为全局设置
+返回：None
+示例：
+from DrissionPage import ChromiumPagep = ChromiumPage()p.set.auto_handle_alert(all_tabs=True)  # 这之后出现的弹窗都会自动确认
+
+✅️️ 关闭及重连​
+📌 disconnect()​
+此方法用于页面对象断开与页面的连接，但不关闭标签页。断开后，对象不能对标签页进行操作。
+Page、Tab 和ChromiumFrame对象都有此方法。
+值得注意的是，Page 对象断开和浏览器的连接后，仍能进行标签页的管理。
+参数： 无
+返回：None
+
+📌 reconnect()​
+此方法用于关闭与页面连接，然后重建一个新连接。
+这主要用于应付长期运行导致内存占用过高，断开连接可释放内存，然后重连继续控制浏览器。
+Page、Tab 和ChromiumFrame对象都有此方法。
+参数名称类型默认值说明waitfloat0关闭后等待多少秒再连接
+返回：None
+
+📌 quit()​
+此方法用于关闭浏览器。
+参数名称类型默认值说明timeoutfloat5等待浏览器关闭超时时间（秒）forceboolTrue关闭超时是否强制终止进程
+返回：None上一页🚤 获取网页信息下一页🚤 查找元素✅️️ 页面跳转📌 get()📌 back()📌 forward()📌 refresh()📌 stop_loading()📌 set.blocked_urls()✅️️ 元素管理📌 add_ele()📌 remove_ele()✅️️ 执行脚本或命令📌 run_js()📌 run_js_loaded()📌 run_async_js()📌 run_cdp()📌 run_cdp_loaded()✅️️ cookies 及缓存📌 set.cookies()📌 set.cookies.clear()📌 set.cookies.remove()📌 set.session_storage()📌 set.local_storage()📌 clear_cache()✅️️ 运行参数设置📌 set.retry_times()📌 set.retry_interval()📌 set.timeouts()📌 set.load_strategy📌 set.user_agent()📌 set.headers()✅️️ 窗口管理📌 set.window.max()📌 set.window.mini()📌 set.window.full()📌 set.window.normal()📌 set.window.size()📌 set.window.location()📌 set.window.hide()📌 set.window.show()✅️️ 页面滚动📌 scroll.to_top()📌 scroll.to_bottom()📌 scroll.to_half()📌 scroll.to_rightmost()📌 scroll.to_leftmost()📌 scroll.to_location()📌 scroll.up()📌 scroll.down()📌 scroll.right()📌 scroll.left()📌 scroll.to_see()✅️️ 滚动设置📌 set.scroll.smooth()📌 set.scroll.wait_complete()✅️️ 弹出消息处理📌 handle_alert()📌 自动处理📌 全局自动处理✅️️ 关闭及重连📌 disconnect()📌 reconnect()📌 quit()作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2  版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.

@@ -1,0 +1,44 @@
+## 🛸 独有功能
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🛳️ ChromiumPage🚀 WebPage🛸 概述🛸 创建页面对象🛸 模式切换🛸 独有功能🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🚀 WebPage🛸 独有功能本页总览🛸 独有功能本节介绍Webpage独有的功能。
+WebPage是ChromiumPage和SessionPage的集成，因此拥有这两者全部功能。这些功能具体查看相关章节，这里只介绍WebPage独有的功能。
+✅️️ cookies 处理​
+📌 cookies_to_session()​
+此方法把浏览器的 cookies 复制到session对象。
+参数名称类型默认值说明copy_user_agentboolTrue是否复制 user agent 信息
+返回：None
+
+📌 cookies_to_browser()​
+此方法把session对象的 cookies 复制到浏览器。
+参数： 无
+返回：None
+
+✅️️ 属性设置​
+set_cookies()、set_headers()、set_user_agent()方法设置的值，只对当前模式有效，即 d 模式时调用这些方法，会对浏览器进行设置，而不会对
+Session 对象进行设置，反之亦然。
+✅️️ 标签页​
+WebPage的get_tab()方法获取的标签页对象是WebPageTab，它与WebPage一样也能切换状态。除了不能控制标签页和浏览器的下载功能，其它功能与WebPage一致。
+WebPageTab刚创建的时候处于 d 模式。
+示例：
+from DrissionPage import WebPagepage = WebPage()tab = page.new_tab('https://www.baidu.com')tab.change_mode()  # Tab对象也能切换模式tab.get('https://gitee.com')print(tab.title)
+✅️️ 关闭对象​
+📌 close_driver()​
+此方法关闭内置Driver对象及浏览器，并切换到 s 模式。
+参数： 无
+返回：None
+
+📌 close_session()​
+此方法关闭内置Session对象及浏览器，并切换到 d 模式。
+参数： 无
+返回：None
+
+📌 close()​
+此方法用于关闭当前标签页和 Session。
+参数： 无
+返回：None
+
+📌 quit()​
+此方法彻底关闭内置的Session对象和Driver对象，并关闭浏览器（如已打开）。
+参数名称类型默认值说明timeoutfloat5等待浏览器关闭超时时间（秒）forceboolTrue关闭超时是否强制终止进程
+返回：None上一页🛸 模式切换下一页🔦 概述✅️️ cookies 处理📌 cookies_to_session()📌 cookies_to_browser()✅️️ 属性设置✅️️ 标签页✅️️ 关闭对象📌 close_driver()📌 close_session()📌 close()📌 quit()作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.

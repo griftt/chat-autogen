@@ -6,7 +6,7 @@ from autogen import ChatResult, Agent, ConversableAgent
 from autogen.coding import LocalCommandLineCodeExecutor
 
 from autogenDmo.simpleChat import callBack
-from config_list import config_list_mistral
+from config_list import config_list_mistral, config_list_gpt3
 import streamlit as st
 from typing import Annotated, Literal
 
@@ -29,7 +29,7 @@ temp_dir = tempfile.TemporaryDirectory()
 
 # Create a local command line code executor.
 executor = LocalCommandLineCodeExecutor(
-    timeout=10,  # Timeout for each code execution in seconds.
+    timeout=600,  # Timeout for each code execution in seconds.
     work_dir=temp_dir.name,  # Use the temporary directory to store the code files.
 )
 def callBack(
@@ -47,12 +47,13 @@ def callBack(
 
 class SimpleChat:
     def initSimeDoubleChat(self,promt):
-        chinese = autogen.AssistantAgent("chinese", llm_config={"config_list": config_list_mistral},
+        chinese = autogen.AssistantAgent("chinese", llm_config={"config_list": config_list_gpt3},
                                          system_message="你是一个顶级程序员"
+
                                          )
         # Register the tool signature with the assistant agent.
         #注册让助手可以建议用户代理调用
-        chinese.register_for_llm(name="calculator", description="A simple calculator")(calculator)
+        #chinese.register_for_llm(name="calculator", description="A simple calculator")(calculator)
 
 
         # american = autogenUtil.AssistantAgent("", llm_config={"config_list": config_list_mistral},
@@ -66,11 +67,11 @@ class SimpleChat:
                                       max_consecutive_auto_reply=4,
                                       # llm_config={"config_list": config_list_mistral},
                                       human_input_mode="NEVER",
-                                      code_execution_config={"executor": executor,})
+                                      code_execution_config={"use_docker": False,})
         host.register_reply([Agent, None], reply_func=callBack)
         # Register the tool function with the user proxy agent.
         #用户代理可以调用的方法
-        host.register_for_execution(name="calculator")(calculator)
+        #host.register_for_execution(name="calculator")(calculator)
 
         from autogen import register_function
 
@@ -84,10 +85,10 @@ class SimpleChat:
         #     description="A simple calculator",  # A description of the tool.
         # )
 
-        host.initiate_chat(chinese,message="帮我写程序计算从1 加到100 总和是多少", max_turns=4)
+        host.initiate_chat(chinese,message=promt, max_turns=4,summary_method="reflection_with_llm")
 
         #host.send(promt,chinese)
 
 
 caht=SimpleChat()
-caht.initSimeDoubleChat("1+11等于多少")
+caht.initSimeDoubleChat("123 add 23 is how much?")

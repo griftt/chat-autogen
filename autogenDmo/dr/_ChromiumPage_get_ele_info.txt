@@ -1,0 +1,195 @@
+## 🚤 获取元素信息
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🛳️ ChromiumPage🚤 概述🚤 启动或接管浏览器🚤 访问网页🚤 获取网页信息🚤 页面交互🚤 查找元素🚤 获取元素信息🚤 元素交互🚤 自动等待🚤 文件上传🚤 标签页操作🚤 iframe 操作🚤 监听网络数据🚤 动作链🚤 截图和录像🚤 浏览器启动设置🚀 WebPage🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🛳️ ChromiumPage🚤 获取元素信息本页总览🚤 获取元素信息浏览器元素对应的对象是ChromiumElement和ShadowRoot，本节介绍获取到元素对象后，如何获取其信息。
+ChromiumElement拥有SessionElement所有属性，并有更多浏览器专属的信息。本节重点介绍如何获取浏览器专有的元素信息。
+✅️️ 与SessionElement共有信息​
+此处仅列出列表，具体用法请查看收发数据包部分的“获取元素信息”。
+属性或方法说明html此属性返回元素的 outerHTML 文本inner_html此属性返回元素的 innerHTML 文本tag此属性返回元素的标签名text此属性返回元素内所有文本组合成的字符串raw_text此属性返回元素内原始文本texts()此方法返回元素内所有直接子节点的文本，包括元素和文本节点comments此属性以列表形式返回元素内的注释attrs此属性以字典形式返回元素所有属性及值attr()此方法返回元素某个 attribute 属性值link此方法返回元素的 href 属性或 src 属性page此属性返回元素所在的总控页面对象xpath此属性返回当前元素在页面中 xpath 的绝对路径css_path此属性返回当前元素在页面中 css selector 的绝对路径
+
+✅️️ 大小和位置​
+📌 rect.size​
+此属性以元组形式返回元素的大小。
+类型：Tuple[float, float]
+size = ele.rect.size# 返回：(50, 50)
+
+📌 rect.location​
+此属性以元组形式返回元素左上角在整个页面中的坐标。
+类型：Tuple[float, float]
+loc = ele.rect.location# 返回：(50, 50)
+
+📌 rect.midpoint​
+此属性以元组形式返回元素中点在整个页面中的坐标。
+类型：Tuple[float, float]
+loc = ele.rect.midpoint# 返回：(55, 55)
+
+📌 rect.click_point​
+此属性以元组形式返回元素点击点在整个页面中的坐标。
+点击点是指click()方法点击时的位置，位于元素中上部。
+类型：Tuple[float, float]
+
+📌 rect.viewport_location​
+此属性以元组形式返回元素左上角在当前视口中的坐标。
+类型：Tuple[float, float]
+
+📌 rect.viewport_midpoint​
+此属性以元组形式返回元素中点在当前视口中的坐标。
+类型：Tuple[floatt, float]
+
+📌 rect.viewport_click_point​
+此属性以元组形式返回元素点击点在当前视口中的坐标。
+类型：Tuple[float, float]
+
+📌 rect.screen_location​
+此属性以元组形式返回元素左上角在屏幕中的坐标。
+类型：Tuple[float, float]
+
+📌 rect.screen_midpoint​
+此属性以元组形式返回元素中点在屏幕中的坐标。
+类型：Tuple[float, float]
+
+📌 rect.screen_click_point​
+此属性以元组形式返回元素点击点在屏幕中的坐标。
+类型：Tuple[float, float]
+
+📌 rect.corners​
+此属性以列表形式返回元素四个角在页面中的坐标，顺序：左上、右上、右下、左下。
+类型：((float, float), (float, float), (float, float), (float, float),)
+
+📌 rect.viewport_corners​
+此属性以列表形式返回元素四个角在视口中的坐标，顺序：左上、右上、右下、左下。
+类型：list[(float, float), (float, float), (float, float), (float, float)]
+
+📌 rect.viewport_rect​
+此属性以列表形式返回元素四个角在视口中的坐标，顺序：左上、右上、右下、左下。
+类型：List[(float, float), (float, float), (float, float), (float, float)]
+
+✅️️ 属性和内容​
+📌 pseudo.before​
+此属性以文本形式返回当前元素的::before伪元素内容。
+类型：str
+before_txt = ele.pseudo.before
+
+📌 pseudo.after​
+此属性以文本形式返回当前元素的::after伪元素内容。
+类型：str
+after_txt = ele.pseudo.after
+
+📌 style()​
+该方法返回元素 css 样式属性值，可获取伪元素的属性。它有两个参数，style参数输入样式属性名称，pseudo_ele
+参数输入伪元素名称，省略则获取普通元素的 css 样式属性。
+参数名称类型默认值说明stylestr必填样式名称pseudo_elestr''伪元素名称（如有）
+返回类型说明str样式属性值
+示例：
+# 获取 css 属性的 color 值prop = ele.style('color')# 获取 after 伪元素的内容prop = ele.style('content', 'after')
+
+📌 property()​
+此方法返回property属性值。它接收一个字符串参数，返回该参数的属性值。
+参数名称类型默认值说明namestr必填属性名称
+返回类型说明str属性值
+
+📌 shadow_root​
+此属性返回元素内的 shadow-root 对象，没有的返回None。
+类型：ShadowRoot
+
+📌 任意属性​
+元素可用ele.xxxx的方式获取指定属性，没有该属性时返回None。
+逻辑是先从 attribute 中获取属性，如果为None再在 property 中查找。
+返回类型：str、None
+注意
+不能获取ele.class，因为class是 python 关键字，用ele.attr('class')代替
+如果要获取的属性与元素对象原有属性或方法重名，如texts，也要用上述方法代替
+
+print(ele.id)
+
+✅️️ 状态信息​
+状态信息藏在states属性中。
+📌states.is_in_viewport​
+此属性以布尔值方式返回元素是否在视口中，以元素可以接受点击的点为判断。
+类型：bool
+
+📌states.is_whole_in_viewport​
+此属性以布尔值方式返回元素是否整个在视口中。
+类型：bool
+
+📌states.is_alive​
+此属性以布尔值形式返回当前元素是否仍可用。用于判断 d 模式下是否因页面刷新而导致元素失效。
+类型：bool
+
+📌 states.is_checked​
+此属性以布尔值返回表单单选或多选元素是否选中。
+类型：bool
+
+📌 states.is_selected​
+此属性以布尔值返回<select>元素中的项是否选中。
+类型：bool
+
+📌 states.is_enabled​
+此属性以布尔值返回元素是否可用。
+类型：bool
+
+📌 states.is_displayed​
+此属性以布尔值返回元素是否可见。
+类型：bool
+
+📌 states.is_covered​
+此属性返回元素是否被其它元素覆盖。如被覆盖，返回覆盖元素的 id，否则返回False
+返回类型说明False未被覆盖，返回Falseint被覆盖时返回覆盖元素的 id
+
+📌 states.has_rect​
+此属性返回元素是否拥有大小和位置信息，有则返回四个角在页面上的坐标组成的列表，没有则返回False。
+返回类型说明list存在大小和位置信息时，以[(int, int), ...] 格式返回元素四个角的坐标，顺序：左上、右上、右下、左下False不存在时返回False
+
+✅️️ 保存元素​
+保存功能是本库一个特色功能，可以直接读取浏览器缓存，无需依赖另外的 ui 库或重新下载就可以保存页面资源。
+作为对比，selenium 无法自身实现图片另存，往往需要通过使用 ui 工具进行辅助，不仅效率和可靠性低，还占用键鼠资源。
+📌 src()​
+此方法用于返回元素src属性所使用的资源。base64 的可转为bytes返回，其它的以str返回。无资源的返回None。
+例如，可获取页面上图片字节数据，用于识别内容，或保存到文件。<script>标签也可获取 js 文本。
+参数名称类型默认值说明timeoutfloatNone等待资源加载超时时间，为None时使用元素所在页面timeout属性base64_to_bytesboolTrue为True时，如果是 base64 数据，转换为bytes格式
+返回类型说明str资源字符串None无资源的返回None
+示例：
+img = page('tag:img')src = img.src()
+
+📌 save()​
+此方法用于保存src()方法获取到的资源到文件。
+参数名称类型默认值说明pathstrPathNone文件保存路径，为None时保存到当前文件夹namestrNone文件名称，需包含后缀，为None时从资源 url 获取timeoutfloatNone等待资源加载超时时间，为None时使用元素所在页面timeout属性renameboolTrue遇到重名文件时是否自动重命名
+返回类型说明str保存路径
+示例：
+img = page('tag:img')img.save('D:\\img.png')
+
+✅️️ ShadowRoot属性​
+本库把 shadow dom 的root看作一个元素处理，可以获取属性，也可以执行其下级的查找，使用逻辑与ChromiumElement
+一致，但属性较之少，有如下这些：
+📌 tag​
+此属性返回元素标签名，即'shadow-root'。
+类型：str
+
+📌 html​
+此属性返回shadow_root的 html 文本，由<shadow_root></shadow_root> 标签包裹。
+类型：str
+
+📌 inner_html​
+此属性返回shadow_root内部的 html 文本。
+类型：str
+
+📌 page​
+此属性返回元素所在页面对象。
+类型：ChromiumPage、ChromiumTab、ChromiumFrame、WebPage
+
+📌 parent_ele​
+此属性返回所依附的普通元素对象。
+类型：ChromiumElement
+
+📌 states.is_enabled​
+与ChromiumElement一致。
+类型：bool
+
+📌 states.is_alive​
+与ChromiumElement一致。
+类型：bool
+
+✅️️ 比较元素​
+两个元素对象可以用==来比较，以判断它们是否指向同一个元素。
+示例：
+ele1 = page('t:div')ele2 = page('t:div')print(ele1==ele2)  # 输出True上一页🚤 查找元素下一页🚤 元素交互✅️️ 与SessionElement共有信息✅️️ 大小和位置 📌 rect.size📌 rect.location📌 rect.midpoint📌 rect.click_point📌 rect.viewport_location📌 rect.viewport_midpoint📌 rect.viewport_click_point📌 rect.screen_location📌 rect.screen_midpoint📌 rect.screen_click_point📌 rect.corners📌 rect.viewport_corners📌 rect.viewport_rect✅️️ 属性和内容📌 pseudo.before📌 pseudo.after📌 style()📌 property()📌 shadow_root📌 任意属性✅️️ 状态信息📌states.is_in_viewport📌states.is_whole_in_viewport📌states.is_alive📌 states.is_checked📌 states.is_selected📌 states.is_enabled📌 states.is_displayed📌 states.is_covered📌 states.has_rect✅️️ 保存元素📌 src()📌 save()✅️️ ShadowRoot属性📌 tag📌 html📌 inner_html📌 page📌 parent_ele📌 states.is_enabled📌 states.is_alive✅️️ 比较元素作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2 版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.

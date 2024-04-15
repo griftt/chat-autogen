@@ -1,0 +1,11 @@
+## 🚀 WebPage
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🛳️ ChromiumPage🚀 WebPage🛸 概述🛸 创建页面对象🛸 模式切换🛸 独有功能🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🚀 WebPage🛸 概述🛸 概述WebPage对象整合了SessionPage和ChromiumPage，实现了两者之间的互通。
+它既可以操控浏览器，也可以收发数据包，并且会在两者之间同步登录信息。
+它有 d 和 s 两种模式，分别对应操控浏览器和收发数据包。
+WebPage可灵活的在两种模式间切换，从而实现一些有趣的用法。
+比如，网站登录代码非常复杂，用数据包实现过于烧脑，我们可以用浏览器处理登录，再通过切换模式用收发数据包的方式去采集数据。
+两种模式的使用逻辑是一致的，跟ChromiumPage没有区别，易于上手。
+WebPage结构图：
+上一页🚤 浏览器启动设置下一页🛸 创建页面对象作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.

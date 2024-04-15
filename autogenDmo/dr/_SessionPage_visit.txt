@@ -1,0 +1,41 @@
+## 🚄 访问网页
+
+跳到主要内容当前文档适用于：DrissionPage 4.0.4.21DrissionPage特性介绍使用文档实用教程开发进度软件生态合作咨询GiteeGitHub搜索💬 入门指南🚅 SessionPage🚄 概述🚄 创建页面对象🚄 访问网页🚄 获取页面信息🚄 查找元素🚄 获取元素信息🚄 页面设置🚄 启动配置🛳️ ChromiumPage🚀 WebPage🔎 查找元素⬇️ 下载文件🧰 进阶使用🛠 旧版（MixPage）🚅 SessionPage🚄 访问网页本页总览🚄 访问网页SessionPage和WebPage的 s 模式基于 requests 进行网络连接，因此可使用 requests 内置的所有请求方式，包括get()、post()、head()、options()、put()
+、patch()、delete()。不过本库目前只对get()和post()做了封装和优化，其余方式可通过调用页面对象内置的Session对象使用。这里只对SessionPage
+进行说明，后面章节再单独介绍WebPage。
+✅️️ get()​
+📌 访问在线网页​
+get()方法语法与 requests 的get()方法一致，在此基础上增加了连接失败重试功能。与 requests 不一样的是，它不返回Response对象。
+参数名称类型默认值说明urlstr必填目标 urlshow_errmsgboolFalse连接出错时是否显示和抛出异常retryintNone重试次数，为None时使用页面参数，默认 3intervalfloatNone重试间隔（秒），为None时使用页面参数，默认 2timeoutfloatNone加载超时时间（秒）**kwargs-None连接所需其它参数，具体见 requests 用法
+返回类型说明bool是否连接成功
+**kwargs参数与 requests 中该参数使用方法一致，但有一个特点，如果该参数中设置了某一项（如headers），该项中的每个项会覆盖从配置中读取的同名项，而不会整个覆盖。
+就是说，如果想继续使用配置中的headers信息，而只想修改其中一项，只需要传入该项的值即可。这样可以简化代码逻辑。
+实用功能：
+
+程序会根据要访问的网址自动在headers中加入Host和Referer项
+程序会自动从返回内容中确定编码，一般情况无需手动设置
+
+普通访问网页：
+from DrissionPage import SessionPagepage = SessionPage()page.get('http://g1879.gitee.io/drissionpage')
+使用连接参数访问网页：
+from DrissionPage import SessionPagepage = SessionPage()url = 'https://www.baidu.com'headers = {'referer': 'gitee.com'}cookies = {'name': 'value'}proxies = {'http': '127.0.0.1:1080', 'https': '127.0.0.1:1080'}page.get(url, headers=headers, cookies=cookies, proxies=proxies)
+
+📌 读取本地文件​
+get()的url参数可指向本地文件，实现本地 html 解析。
+from DrissionPage import SessionPagepage = SessionPage()page.get(r'D:\demo.html')
+
+✅️️ post()​
+此方法是用 post 方式请求页面。用法与get()一致。
+参数名称类型默认值说明urlstr必填目标urlshow_errmsgboolFalse连接出错时是否显示和抛出异常retryintNone重试次数，为None时使用页面参数，默认 3intervalfloatNone重试间隔（秒），为None时使用页面参数，默认 2**kwargs-None连接所需其它参数，具体见 requests 用法
+返回类型说明bool是否连接成功
+from DrissionPage import SessionPagepage = SessionPage()data = {'username': 'xxxxx', 'pwd': 'xxxxx'}page.post('http://example.com', data=data)# 或page.post('http://example.com', json=data)
+data参数和json参数都可接收str和dict格式数据，即有以下 4 种传递数据的方式：
+# 向 data 参数传入字符串page.post(url, data='abc=123')# 向 data 参数传入字典page.post(url, data={'abc': '123'})# 向 json 参数传入字符串page.post(url, json='abc=123')# 向 json 参数传入字典page.post(url, json={'abc': '123'})
+具体使用哪种，按服务器要求而定。
+
+✅️️ 其它请求方式​
+本库只针对常用的 get 和 post 方式作了优化，但也可以通过提取页面对象内的Session对象以原生 requests 代码方式执行其它请求方式。
+from DrissionPage import SessionPagepage = SessionPage()# 获取内置的 Session 对象session = page.session# 以 head 方式发送请求response = session.head('https://www.baidu.com')print(response.headers)
+输出：
+{'Accept-Ranges': 'bytes', 'Cache-Control': 'private, no-cache, no-store, proxy-revalidate, no-transform', 'Connection': 'keep-alive', 'Content-Length': '277', 'Content-Type': 'text/html', 'Date': 'Tue, 04 Jan 2022 06:49:18 GMT', 'Etag': '"575e1f72-115"', 'Last-Modified': 'Mon, 13 Jun 2016 02:50:26 GMT', 'Pragma': 'no-cache', 'Server': 'bfe/1.0.8.18'}上一页🚄 创建页面对象下一页🚄 获取页面信息✅️️ get()📌 访问在线网页📌 读取本地文件✅️️ post()✅️️ 其它请求方式作者g1879交流联系邮箱：g1879@qq.comQQ群：636361957旧版地址3.2版文档MixPage本文档禁止商用 DrissionPageDocs by g1879 is licensed under CC BY-NC 4.0
+粤ICP备2024179482号-1.
